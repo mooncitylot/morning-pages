@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morning Pages</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: 'Courier Prime', 'Courier New', monospace;
+        background: #111111;
+        color: #e8e8e8;
+        line-height: 1.6;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    header {
+        padding: 2rem 2rem 1rem;
+        border-bottom: 1px solid #2a2a2a;
+        background: #111111;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+        font-weight: 400;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+        color: #ffffff;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        padding: 2rem;
+        gap: 1.5rem;
+        overflow: hidden;
+    }
+
+    textarea {
+        flex: 1;
+        padding: 1.5rem;
+        border: 1px solid #2a2a2a;
+        background: #1a1a1a;
+        font-family: 'Courier Prime', 'Courier New', monospace;
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #e8e8e8;
+        resize: none;
+        border-radius: 0;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    textarea::placeholder {
+        color: #444;
+    }
+
+    textarea:focus {
+        border-color: #444;
+    }
+
+    .footer {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .stats {
+        font-size: 0.95rem;
+        color: #aaa;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .word-count {
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    button {
+        padding: 0.6rem 1.2rem;
+        border: 1px solid #444;
+        background: #1a1a1a;
+        color: #e8e8e8;
+        font-family: 'Courier Prime', 'Courier New', monospace;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-radius: 0;
+        letter-spacing: 0.02em;
+    }
+
+    button:hover {
+        background: #2a2a2a;
+        border-color: #666;
+    }
+
+    button:active {
+        transform: translateY(1px);
+    }
+
+    button.secondary {
+        background: #e8e8e8;
+        color: #111111;
+        border-color: #e8e8e8;
+    }
+
+    button.secondary:hover {
+        background: #ffffff;
+        border-color: #ffffff;
+    }
+
+    button.danger {
+        background: #8b2020;
+        border-color: #8b2020;
+        color: #fff;
+    }
+
+    .progress-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 0.75rem;
+    }
+
+    .progress-track {
+        flex: 1;
+        height: 3px;
+        background: #2a2a2a;
+        position: relative;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: #e8e8e8;
+        width: 0%;
+        transition: width 0.2s ease;
+        max-width: 100%;
+    }
+
+    .progress-fill.complete {
+        background: #4caf50;
+    }
+
+    .page-count {
+        font-size: 0.85rem;
+        color: #aaa;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+
+    .page-count span {
+        color: #ffffff;
+        font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 1.4rem; }
+        .container { padding: 1rem; }
+        textarea { font-size: 1rem; padding: 1rem; }
+        .footer { flex-direction: column; align-items: flex-start; }
+        .button-group { width: 100%; }
+        button { flex: 1; }
+    }
+</style>
+```
+
+</head>
+<body>
+    <header>
+        <h1>Morning Pages</h1>
+        <div class="stats">
+            Words: <span class="word-count" id="wordCount">0</span> &bull; Characters: <span id="charCount">0</span>
+        </div>
+        <div class="progress-row">
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="page-count"><span id="pageCount">0</span>/3 pages</div>
+        </div>
+    </header>
+
+```
+<div class="container">
+    <textarea id="textArea" placeholder="Begin writing..."></textarea>
+
+    <div class="footer">
+        <div class="button-group">
+            <button id="copyBtn">Copy</button>
+            <button id="clearBtn" class="secondary">Clear</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const textArea = document.getElementById('textArea');
+    const wordCountEl = document.getElementById('wordCount');
+    const charCountEl = document.getElementById('charCount');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    const progressFill = document.getElementById('progressFill');
+    const pageCountEl = document.getElementById('pageCount');
+
+    function updateStats() {
+        const text = textArea.value;
+        const chars = text.length;
+        const words = text.trim().length === 0 ? 0 : text.trim().split(/\s+/).length;
+        wordCountEl.textContent = words.toLocaleString();
+        charCountEl.textContent = chars.toLocaleString();
+
+        const pct = Math.min((words / 750) * 100, 100);
+        progressFill.style.width = pct + '%';
+        progressFill.classList.toggle('complete', words >= 750);
+
+        const pages = Math.min(Math.floor(words / 250), 3);
+        pageCountEl.textContent = pages;
+    }
+
+    // Block backspace and delete
+    textArea.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+            e.preventDefault();
+        }
+    });
+
+    textArea.addEventListener('input', updateStats);
+
+    // Copy button
+    copyBtn.addEventListener('click', function() {
+        const text = textArea.value;
+        if (!text.length) {
+            copyBtn.textContent = 'Nothing to copy';
+            setTimeout(function() { copyBtn.textContent = 'Copy'; }, 1500);
+            return;
+        }
+        navigator.clipboard.writeText(text).then(function() {
+            copyBtn.textContent = 'Copied!';
+            setTimeout(function() { copyBtn.textContent = 'Copy'; }, 1500);
+        }).catch(function() {
+            copyBtn.textContent = 'Failed';
+            setTimeout(function() { copyBtn.textContent = 'Copy'; }, 1500);
+        });
+    });
+
+    // Clear button — two-tap, no confirm() dialog
+    var clearPending = false;
+    var clearTimer = null;
+
+    clearBtn.addEventListener('click', function() {
+        if (!textArea.value.length) {
+            clearBtn.textContent = 'Already empty';
+            setTimeout(function() { clearBtn.textContent = 'Clear'; }, 1500);
+            return;
+        }
+
+        if (!clearPending) {
+            clearPending = true;
+            clearBtn.textContent = 'Tap again to clear';
+            clearBtn.classList.add('danger');
+            clearBtn.classList.remove('secondary');
+            clearTimer = setTimeout(function() {
+                clearPending = false;
+                clearBtn.textContent = 'Clear';
+                clearBtn.classList.remove('danger');
+                clearBtn.classList.add('secondary');
+            }, 2500);
+        } else {
+            clearTimeout(clearTimer);
+            clearPending = false;
+            clearBtn.classList.remove('danger');
+            clearBtn.classList.add('secondary');
+            textArea.value = '';
+            updateStats();
+            textArea.focus();
+            clearBtn.textContent = 'Cleared';
+            setTimeout(function() { clearBtn.textContent = 'Clear'; }, 1500);
+        }
+    });
+
+    textArea.focus();
+</script>
+```
+
+</body>
+</html>
