@@ -30,7 +30,6 @@
 
     header {
         padding: 2rem 2rem 1rem;
-        border-bottom: 1px solid #2a2a2a;
         background: #111111;
     }
 
@@ -54,7 +53,7 @@
     textarea {
         flex: 1;
         padding: 1.5rem;
-        border: 1px solid #2a2a2a;
+        border: none;
         background: #1a1a1a;
         font-family: 'Courier Prime', 'Courier New', monospace;
         font-size: 1rem;
@@ -99,7 +98,7 @@
 
     button {
         padding: 0.6rem 1.2rem;
-        border: 1px solid #444;
+        border: none;
         background: #1a1a1a;
         color: #e8e8e8;
         font-family: 'Courier Prime', 'Courier New', monospace;
@@ -122,17 +121,14 @@
     button.secondary {
         background: #e8e8e8;
         color: #111111;
-        border-color: #e8e8e8;
     }
 
     button.secondary:hover {
         background: #ffffff;
-        border-color: #ffffff;
     }
 
     button.danger {
         background: #8b2020;
-        border-color: #8b2020;
         color: #fff;
     }
 
@@ -174,6 +170,56 @@
         font-weight: 700;
     }
 
+    .mode-row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-top: 0.85rem;
+    }
+
+    .mode-label {
+        font-size: 0.8rem;
+        color: #555;
+        letter-spacing: 0.04em;
+        user-select: none;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .mode-label.active { color: #e8e8e8; }
+
+    .toggle {
+        position: relative;
+        width: 36px;
+        height: 20px;
+        flex-shrink: 0;
+        cursor: pointer;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+
+    .toggle-track {
+        position: absolute;
+        inset: 0;
+        background: #2a2a2a;
+        border-radius: 20px;
+        transition: background 0.2s;
+    }
+    .toggle input:checked ~ .toggle-track { background: #555; }
+
+    .toggle-thumb {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 14px;
+        height: 14px;
+        background: #666;
+        border-radius: 50%;
+        transition: transform 0.2s, background 0.2s;
+    }
+    .toggle input:checked ~ .toggle-thumb {
+        transform: translateX(16px);
+        background: #e8e8e8;
+    }
+
     @media (max-width: 768px) {
         h1 { font-size: 1.4rem; }
         .container { padding: 1rem; }
@@ -182,12 +228,351 @@
         .button-group { width: 100%; }
         button { flex: 1; }
     }
+
+    /* Modal overlay */
+    .modal-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 100;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        padding: 2rem;
+        width: min(420px, 90vw);
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .modal h2 {
+        font-size: 1.1rem;
+        font-weight: 400;
+        letter-spacing: 0.05em;
+        color: #ffffff;
+    }
+
+    .modal input[type="text"] {
+        width: 100%;
+        padding: 0.6rem 0.8rem;
+        background: #111;
+        border: 1px solid #444;
+        color: #e8e8e8;
+        font-family: 'Courier Prime', 'Courier New', monospace;
+        font-size: 1rem;
+        outline: none;
+    }
+
+    .modal input[type="text"]:focus { border-color: #888; }
+
+    .modal .modal-date {
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    .modal .modal-actions {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: flex-end;
+    }
+
+    /* Saved pages panel */
+    .panel-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 100;
+        align-items: flex-start;
+        justify-content: flex-end;
+    }
+    .panel-backdrop.open { display: flex; }
+
+    .panel {
+        background: #1a1a1a;
+        border-left: 1px solid #2a2a2a;
+        width: min(380px, 100vw);
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .panel-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #2a2a2a;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .panel-header h2 {
+        font-size: 1rem;
+        font-weight: 400;
+        letter-spacing: 0.05em;
+        color: #ffffff;
+    }
+
+    .panel-close {
+        background: none;
+        border: none;
+        color: #888;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0.2rem 0.4rem;
+        line-height: 1;
+    }
+    .panel-close:hover { color: #fff; background: none; }
+
+    .panel-search {
+        padding: 0.75rem 1.5rem;
+        border-bottom: 1px solid #222;
+    }
+
+    .panel-search input {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        background: #111;
+        border: 1px solid #333;
+        color: #e8e8e8;
+        font-family: 'Courier Prime', 'Courier New', monospace;
+        font-size: 0.9rem;
+        outline: none;
+    }
+    .panel-search input:focus { border-color: #666; }
+    .panel-search input::placeholder { color: #444; }
+
+    .page-entry-title mark {
+        background: none;
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .panel-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0.5rem 0;
+    }
+
+    .panel-empty {
+        padding: 2rem 1.5rem;
+        color: #555;
+        font-size: 0.9rem;
+    }
+
+    .page-entry {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #222;
+        cursor: pointer;
+        transition: background 0.15s;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+    .page-entry:hover { background: #222; }
+
+    .page-entry-title {
+        color: #e8e8e8;
+        font-size: 0.95rem;
+    }
+
+    .page-entry-meta {
+        color: #555;
+        font-size: 0.8rem;
+    }
+
+    .page-entry-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .page-entry-actions button {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.7rem;
+        border-color: #333;
+    }
+
+    .page-entry-actions .btn-delete {
+        color: #c0392b;
+        border-color: #3a2020;
+    }
+    .page-entry-actions .btn-delete:hover {
+        background: #3a2020;
+        border-color: #c0392b;
+    }
+
+    /* View modal */
+    .view-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        z-index: 200;
+        align-items: flex-start;
+        justify-content: center;
+        overflow-y: auto;
+        padding: 2rem 1rem;
+    }
+    .view-backdrop.open { display: flex; }
+
+    .view-modal {
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        width: min(740px, 100%);
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .view-modal-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #2a2a2a;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-shrink: 0;
+    }
+
+    .view-modal-header h2 {
+        font-size: 1rem;
+        font-weight: 400;
+        color: #fff;
+        letter-spacing: 0.05em;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .view-modal-meta {
+        font-size: 0.8rem;
+        color: #555;
+        flex-shrink: 0;
+    }
+
+    .view-modal-close {
+        background: none;
+        border: none;
+        color: #888;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0.2rem 0.4rem;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+    .view-modal-close:hover { color: #fff; background: none; }
+
+    .view-hint {
+        padding: 0.5rem 1.5rem;
+        font-size: 0.78rem;
+        color: #444;
+        border-bottom: 1px solid #1f1f1f;
+        flex-shrink: 0;
+    }
+
+    .view-content {
+        padding: 2rem 1.5rem;
+        font-family: 'Courier Prime', 'Courier New', monospace;
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #e8e8e8;
+        white-space: pre-wrap;
+        word-break: break-word;
+        user-select: text;
+        cursor: text;
+        flex: 1;
+    }
+
+    .view-content .hl {
+        border-radius: 2px;
+        cursor: pointer;
+        padding: 0 1px;
+    }
+    .view-content .hl:hover { opacity: 0.75; }
+
+    /* Floating highlight toolbar */
+    #hlToolbar {
+        display: none;
+        position: fixed;
+        z-index: 300;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        padding: 0.4rem 0.5rem;
+        gap: 0.4rem;
+        align-items: center;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+    }
+    #hlToolbar.visible { display: flex; }
+
+    .hl-swatch {
+        width: 22px;
+        height: 22px;
+        border-radius: 3px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: border-color 0.15s, transform 0.1s;
+    }
+    .hl-swatch:hover { border-color: #888; transform: scale(1.15); }
+
+    .hl-remove {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.5rem;
+        border: 1px solid #444;
+        background: none;
+        color: #c0392b;
+        cursor: pointer;
+        font-family: 'Courier Prime', 'Courier New', monospace;
+        display: none;
+    }
+    .hl-remove.visible { display: block; }
+    .hl-remove:hover { background: #3a2020; }
+
+    .header-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    .saved-icon-btn {
+        background: none;
+        border: none;
+        padding: 0.2rem 0.3rem;
+        cursor: pointer;
+        color: #444;
+        transition: color 0.2s;
+        line-height: 1;
+        flex-shrink: 0;
+        margin-top: 0.25rem;
+    }
+    .saved-icon-btn:hover { color: #e8e8e8; background: none; }
+    .saved-icon-btn svg { display: block; }
 </style>
 
 </head>
 <body>
     <header>
-        <h1>Morning Pages</h1>
+        <div class="header-top">
+            <h1>Morning Pages</h1>
+            <button class="saved-icon-btn" id="savedBtn" title="Saved pages">
+               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="mask0_15_7" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+<rect width="24" height="24" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask0_15_7)">
+<path d="M6.75 22C6 22 5.35417 21.7459 4.8125 21.2375C4.27083 20.7292 4 20.1 4 19.35V5.40005C4 4.76672 4.19583 4.20005 4.5875 3.70005C4.97917 3.20005 5.49167 2.88338 6.125 2.75005L16 0.800049V16.8L6.525 18.7C6.375 18.7334 6.25 18.8125 6.15 18.9375C6.05 19.0625 6 19.2 6 19.35C6 19.5334 6.075 19.6875 6.225 19.8125C6.375 19.9375 6.55 20 6.75 20H18V4.00005H20V22H6.75ZM9 16.175L14 15.2V3.25005L9 4.22505V16.175ZM7 16.575V4.62505L6.625 4.70005C6.44167 4.73338 6.29167 4.81255 6.175 4.93755C6.05833 5.06255 6 5.21672 6 5.40005V16.825C6.08333 16.7917 6.17083 16.7625 6.2625 16.7375C6.35417 16.7125 6.44167 16.6917 6.525 16.675L7 16.575Z" fill="#E8E8E8"/>
+</g>
+</svg>
+            </button>
+        </div>
         <div class="stats">
             Words: <span class="word-count" id="wordCount">0</span> &bull; Characters: <span id="charCount">0</span>
         </div>
@@ -197,6 +582,14 @@
             </div>
             <div class="page-count"><span id="pageCount">0</span>/3 pages</div>
         </div>
+        <div class="mode-row">
+            <label class="toggle" id="focusToggleLabel" title="Focus mode: block backspace, disable spellcheck">
+                <input type="checkbox" id="focusToggle">
+                <span class="toggle-track"></span>
+                <span class="toggle-thumb"></span>
+            </label>
+            <span class="mode-label" id="modeLabel">Lock In</span>
+        </div>
     </header>
 
 <div class="container">
@@ -204,9 +597,58 @@
 
     <div class="footer">
         <div class="button-group">
+            <button id="saveBtn">Save</button>
             <button id="copyBtn">Copy</button>
             <button id="clearBtn" class="secondary">Clear</button>
         </div>
+    </div>
+</div>
+
+<!-- Save modal -->
+<div class="modal-backdrop" id="saveModal">
+    <div class="modal">
+        <h2>Save page</h2>
+        <div class="modal-date" id="saveModalDate"></div>
+        <input type="text" id="saveTitleInput" placeholder="Title..." maxlength="120">
+        <div class="modal-actions">
+            <button id="saveCancelBtn">Cancel</button>
+            <button id="saveConfirmBtn" class="secondary">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- View modal -->
+<div class="view-backdrop" id="viewBackdrop">
+    <div class="view-modal">
+        <div class="view-modal-header">
+            <h2 id="viewTitle"></h2>
+            <span class="view-modal-meta" id="viewDate"></span>
+            <button class="view-modal-close" id="viewCloseBtn">&#x2715;</button>
+        </div>
+        <div class="view-content" id="viewContent"></div>
+    </div>
+</div>
+
+<!-- Floating highlight toolbar -->
+<div id="hlToolbar">
+    <div class="hl-swatch" data-color="rgba(255,214,0,0.35)"   style="background:rgba(255,214,0,0.55)"   title="Yellow"></div>
+    <div class="hl-swatch" data-color="rgba(76,200,80,0.35)"   style="background:rgba(76,200,80,0.55)"   title="Green"></div>
+    <div class="hl-swatch" data-color="rgba(66,133,244,0.35)"  style="background:rgba(66,133,244,0.55)"  title="Blue"></div>
+    <div class="hl-swatch" data-color="rgba(230,100,150,0.35)" style="background:rgba(230,100,150,0.55)" title="Pink"></div>
+    <button class="hl-remove" id="hlRemoveBtn">Remove</button>
+</div>
+
+<!-- Saved pages panel -->
+<div class="panel-backdrop" id="savedPanel">
+    <div class="panel">
+        <div class="panel-header">
+            <h2>Saved pages</h2>
+            <button class="panel-close" id="panelCloseBtn">&#x2715;</button>
+        </div>
+        <div class="panel-search">
+            <input type="text" id="panelSearch" placeholder="Search..." autocomplete="off" spellcheck="false">
+        </div>
+        <div class="panel-list" id="panelList"></div>
     </div>
 </div>
 
@@ -216,37 +658,132 @@
     const charCountEl = document.getElementById('charCount');
     const copyBtn = document.getElementById('copyBtn');
     const clearBtn = document.getElementById('clearBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const savedBtn = document.getElementById('savedBtn');
 
     const progressFill = document.getElementById('progressFill');
     const pageCountEl = document.getElementById('pageCount');
 
+    // --- IndexedDB setup ---
+    var db;
+    var dbReady = false;
+    var dbQueue = [];
+
+    var req = indexedDB.open('morning-pages', 1);
+    req.onupgradeneeded = function(e) {
+        var d = e.target.result;
+        if (!d.objectStoreNames.contains('pages')) {
+            var store = d.createObjectStore('pages', { keyPath: 'id', autoIncrement: true });
+            store.createIndex('date', 'date', { unique: false });
+        }
+    };
+    req.onsuccess = function(e) {
+        db = e.target.result;
+        dbReady = true;
+        dbQueue.forEach(function(fn) { fn(); });
+        dbQueue = [];
+    };
+    req.onerror = function() {
+        console.error('IndexedDB failed to open');
+    };
+
+    function withDB(fn) {
+        if (dbReady) fn();
+        else dbQueue.push(fn);
+    }
+
+    function savePage(title, date, content, cb) {
+        withDB(function() {
+            var tx = db.transaction('pages', 'readwrite');
+            tx.objectStore('pages').add({ title: title, date: date, content: content, highlights: [], savedAt: Date.now() });
+            tx.oncomplete = function() { cb && cb(null); };
+            tx.onerror = function() { cb && cb(tx.error); };
+        });
+    }
+
+    function getAllPages(cb) {
+        withDB(function() {
+            var tx = db.transaction('pages', 'readonly');
+            var req = tx.objectStore('pages').getAll();
+            req.onsuccess = function() { cb(null, req.result); };
+            req.onerror = function() { cb(req.error, []); };
+        });
+    }
+
+    function deletePage(id, cb) {
+        withDB(function() {
+            var tx = db.transaction('pages', 'readwrite');
+            tx.objectStore('pages').delete(id);
+            tx.oncomplete = function() { cb && cb(); };
+        });
+    }
+
+    function updatePage(id, updates, cb) {
+        withDB(function() {
+            var tx = db.transaction('pages', 'readwrite');
+            var store = tx.objectStore('pages');
+            var req = store.get(id);
+            req.onsuccess = function() {
+                var record = req.result;
+                if (!record) { cb && cb(new Error('not found')); return; }
+                Object.assign(record, updates);
+                store.put(record);
+                tx.oncomplete = function() { cb && cb(null, record); };
+                tx.onerror = function() { cb && cb(tx.error); };
+            };
+        });
+    }
+
+    // --- Stats ---
     function updateStats() {
-        const text = textArea.value;
-        const chars = text.length;
-        const words = text.trim().length === 0 ? 0 : text.trim().split(/\s+/).length;
+        var text = textArea.value;
+        var chars = text.length;
+        var words = text.trim().length === 0 ? 0 : text.trim().split(/\s+/).length;
         wordCountEl.textContent = words.toLocaleString();
         charCountEl.textContent = chars.toLocaleString();
 
-        const pct = Math.min((words / 750) * 100, 100);
+        var pct = Math.min((words / 750) * 100, 100);
         progressFill.style.width = pct + '%';
         progressFill.classList.toggle('complete', words >= 750);
 
-        const pages = Math.min(Math.floor(words / 250), 3);
+        var pages = Math.min(Math.floor(words / 250), 3);
         pageCountEl.textContent = pages;
     }
 
-    // Block backspace and delete
+    // --- Focus mode ---
+    var focusToggle = document.getElementById('focusToggle');
+    var modeLabel   = document.getElementById('modeLabel');
+    var focusMode   = localStorage.getItem('focusMode') !== 'off';
+
+    function applyFocusMode(on) {
+        focusToggle.checked = on;
+        textArea.spellcheck  = !on;
+        textArea.setAttribute('spellcheck', on ? 'false' : 'true');
+        modeLabel.classList.toggle('active', on);
+        localStorage.setItem('focusMode', on ? 'on' : 'off');
+    }
+
+    focusToggle.addEventListener('change', function() {
+        applyFocusMode(focusToggle.checked);
+    });
+
+    applyFocusMode(focusMode);
+
+    // Block backspace and delete in focus mode
     textArea.addEventListener('keydown', function(e) {
-        if (e.key === 'Backspace' || e.key === 'Delete') {
+        if (focusMode && (e.key === 'Backspace' || e.key === 'Delete')) {
             e.preventDefault();
         }
     });
 
+    // Keep focusMode var in sync with toggle
+    focusToggle.addEventListener('change', function() { focusMode = focusToggle.checked; });
+
     textArea.addEventListener('input', updateStats);
 
-    // Copy button
+    // --- Copy ---
     copyBtn.addEventListener('click', function() {
-        const text = textArea.value;
+        var text = textArea.value;
         if (!text.length) {
             copyBtn.textContent = 'Nothing to copy';
             setTimeout(function() { copyBtn.textContent = 'Copy'; }, 1500);
@@ -261,7 +798,7 @@
         });
     });
 
-    // Clear button — two-tap, no confirm() dialog
+    // --- Clear ---
     var clearPending = false;
     var clearTimer = null;
 
@@ -293,6 +830,397 @@
             textArea.focus();
             clearBtn.textContent = 'Cleared';
             setTimeout(function() { clearBtn.textContent = 'Clear'; }, 1500);
+        }
+    });
+
+    // --- Save modal ---
+    var saveModal = document.getElementById('saveModal');
+    var saveTitleInput = document.getElementById('saveTitleInput');
+    var saveModalDate = document.getElementById('saveModalDate');
+    var saveCancelBtn = document.getElementById('saveCancelBtn');
+    var saveConfirmBtn = document.getElementById('saveConfirmBtn');
+
+    function todayStr() {
+        var d = new Date();
+        return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    }
+
+    function openSaveModal() {
+        saveTitleInput.value = '';
+        saveModalDate.textContent = todayStr();
+        saveModal.classList.add('open');
+        setTimeout(function() { saveTitleInput.focus(); }, 50);
+    }
+
+    function closeSaveModal() {
+        saveModal.classList.remove('open');
+    }
+
+    saveBtn.addEventListener('click', function() {
+        if (!textArea.value.trim().length) {
+            saveBtn.textContent = 'Nothing to save';
+            setTimeout(function() { saveBtn.textContent = 'Save'; }, 1500);
+            return;
+        }
+        openSaveModal();
+    });
+
+    saveCancelBtn.addEventListener('click', closeSaveModal);
+    saveModal.addEventListener('click', function(e) {
+        if (e.target === saveModal) closeSaveModal();
+    });
+
+    saveConfirmBtn.addEventListener('click', doSave);
+    saveTitleInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') doSave();
+        if (e.key === 'Escape') closeSaveModal();
+    });
+
+    function doSave() {
+        var title = saveTitleInput.value.trim();
+        if (!title) {
+            saveTitleInput.style.borderColor = '#c0392b';
+            setTimeout(function() { saveTitleInput.style.borderColor = ''; }, 1000);
+            return;
+        }
+        var date = saveModalDate.textContent;
+        var content = textArea.value;
+
+        saveConfirmBtn.textContent = 'Saving...';
+        saveConfirmBtn.disabled = true;
+
+        savePage(title, date, content, function(err) {
+            saveConfirmBtn.textContent = 'Save';
+            saveConfirmBtn.disabled = false;
+            closeSaveModal();
+            if (!err) {
+                saveBtn.textContent = 'Saved!';
+                setTimeout(function() { saveBtn.textContent = 'Save'; }, 1500);
+            }
+        });
+    }
+
+    // --- Saved panel ---
+    var savedPanel = document.getElementById('savedPanel');
+    var panelList = document.getElementById('panelList');
+    var panelCloseBtn = document.getElementById('panelCloseBtn');
+    var panelSearch = document.getElementById('panelSearch');
+
+    var allPages = [];
+
+    function openPanel() {
+        panelSearch.value = '';
+        getAllPages(function(err, pages) {
+            allPages = err ? [] : pages.sort(function(a, b) { return b.savedAt - a.savedAt; });
+            renderPanelList(allPages, '');
+        });
+        savedPanel.classList.add('open');
+        setTimeout(function() { panelSearch.focus(); }, 80);
+    }
+
+    function closePanel() {
+        savedPanel.classList.remove('open');
+    }
+
+    savedBtn.addEventListener('click', openPanel);
+    panelCloseBtn.addEventListener('click', closePanel);
+    savedPanel.addEventListener('click', function(e) {
+        if (e.target === savedPanel) closePanel();
+    });
+
+    panelSearch.addEventListener('input', function() {
+        var q = panelSearch.value;
+        var filtered = q.trim() ? allPages.filter(function(p) { return fuzzyMatch(q, p.title + ' ' + p.date); }) : allPages;
+        renderPanelList(filtered, q.trim());
+    });
+
+    // Returns true if all chars of query appear in order in str (case-insensitive)
+    function fuzzyMatch(query, str) {
+        var q = query.toLowerCase();
+        var s = str.toLowerCase();
+        var qi = 0;
+        for (var i = 0; i < s.length && qi < q.length; i++) {
+            if (s[i] === q[qi]) qi++;
+        }
+        return qi === q.length;
+    }
+
+    // Highlights matched characters in title given query
+    function fuzzyHighlight(query, title) {
+        if (!query) return escHtml(title);
+        var q = query.toLowerCase();
+        var out = '';
+        var qi = 0;
+        for (var i = 0; i < title.length; i++) {
+            var ch = title[i];
+            if (qi < q.length && ch.toLowerCase() === q[qi]) {
+                out += '<mark>' + escHtml(ch) + '</mark>';
+                qi++;
+            } else {
+                out += escHtml(ch);
+            }
+        }
+        return out;
+    }
+
+    function formatDate(dateStr) {
+        var parts = dateStr.split('-');
+        if (parts.length !== 3) return dateStr;
+        var d = new Date(Number(parts[0]), Number(parts[1])-1, Number(parts[2]));
+        return d.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    function renderPanelList(pages, query) {
+        if (!pages.length) {
+            panelList.innerHTML = '<div class="panel-empty">' + (query ? 'No matches.' : 'No saved pages yet.') + '</div>';
+            return;
+        }
+        panelList.innerHTML = '';
+        pages.forEach(function(page) {
+            var el = document.createElement('div');
+            el.className = 'page-entry';
+            el.innerHTML =
+                '<div class="page-entry-title">' + fuzzyHighlight(query, page.title) + '</div>' +
+                '<div class="page-entry-meta">' + formatDate(page.date) + '</div>' +
+                '<div class="page-entry-actions">' +
+                    '<button class="btn-load" data-id="' + page.id + '">Load</button>' +
+                    '<button class="btn-view" data-id="' + page.id + '">View</button>' +
+                    '<button class="btn-delete" data-id="' + page.id + '">Delete</button>' +
+                '</div>';
+            panelList.appendChild(el);
+        });
+
+        panelList.querySelectorAll('.btn-load').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var id = Number(btn.dataset.id);
+                var page = allPages.find(function(p) { return p.id === id; });
+                if (!page) return;
+                textArea.value = page.content;
+                updateStats();
+                closePanel();
+                textArea.focus();
+            });
+        });
+
+        panelList.querySelectorAll('.btn-view').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var id = Number(btn.dataset.id);
+                var page = allPages.find(function(p) { return p.id === id; });
+                if (!page) return;
+                openViewModal(page);
+            });
+        });
+
+        panelList.querySelectorAll('.btn-delete').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var id = Number(btn.dataset.id);
+                deletePage(id, function() {
+                    allPages = allPages.filter(function(p) { return p.id !== id; });
+                    var q = panelSearch.value.trim();
+                    var filtered = q ? allPages.filter(function(p) { return fuzzyMatch(q, p.title + ' ' + p.date); }) : allPages;
+                    renderPanelList(filtered, q);
+                });
+            });
+        });
+    }
+
+    function loadPanelList() {
+        getAllPages(function(err, pages) {
+            allPages = err ? [] : pages.sort(function(a, b) { return b.savedAt - a.savedAt; });
+            renderPanelList(allPages, panelSearch.value.trim());
+        });
+    }
+
+    function escHtml(s) {
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // --- View modal + highlighting ---
+    var viewBackdrop = document.getElementById('viewBackdrop');
+    var viewTitleEl  = document.getElementById('viewTitle');
+    var viewDateEl   = document.getElementById('viewDate');
+    var viewContent  = document.getElementById('viewContent');
+    var viewCloseBtn = document.getElementById('viewCloseBtn');
+    var hlToolbar    = document.getElementById('hlToolbar');
+    var hlRemoveBtn  = document.getElementById('hlRemoveBtn');
+
+    var viewPage = null; // currently viewed page object (live reference from allPages)
+
+    function openViewModal(page) {
+        viewPage = page;
+        viewTitleEl.textContent = page.title;
+        viewDateEl.textContent  = formatDate(page.date);
+        renderView();
+        viewBackdrop.classList.add('open');
+        hideToolbar();
+    }
+
+    function closeViewModal() {
+        viewBackdrop.classList.remove('open');
+        hideToolbar();
+        viewPage = null;
+    }
+
+    viewCloseBtn.addEventListener('click', closeViewModal);
+    viewBackdrop.addEventListener('click', function(e) {
+        if (e.target === viewBackdrop) closeViewModal();
+    });
+
+    // Render text with highlights as coloured spans
+    function renderView() {
+        if (!viewPage) return;
+        var text = viewPage.content;
+        var highlights = viewPage.highlights || [];
+        viewContent.innerHTML = renderHighlighted(text, highlights);
+
+        viewContent.querySelectorAll('.hl').forEach(function(span) {
+            span.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+                var hlid = Number(span.dataset.hlid);
+                showRemoveToolbar(e.clientX, e.clientY, hlid);
+            });
+        });
+    }
+
+    function renderHighlighted(text, highlights) {
+        if (!highlights || !highlights.length) return escHtml(text);
+
+        // Build per-character colour map
+        var colors = new Array(text.length).fill(null);
+        var hlIds  = new Array(text.length).fill(null);
+        highlights.forEach(function(h) {
+            for (var i = h.start; i < Math.min(h.end, text.length); i++) {
+                colors[i] = h.color;
+                hlIds[i]  = h.id;
+            }
+        });
+
+        // Group consecutive same-color runs
+        var out = '';
+        var i = 0;
+        while (i < text.length) {
+            var color = colors[i];
+            var hlid  = hlIds[i];
+            var j = i + 1;
+            while (j < text.length && colors[j] === color) j++;
+            var seg = escHtml(text.slice(i, j));
+            if (color) {
+                out += '<span class="hl" style="background:' + color + '" data-hlid="' + hlid + '">' + seg + '</span>';
+            } else {
+                out += seg;
+            }
+            i = j;
+        }
+        return out;
+    }
+
+    // Compute char offset of a DOM point within viewContent
+    function domOffsetToText(node, offset) {
+        var walker = document.createTreeWalker(viewContent, NodeFilter.SHOW_TEXT);
+        var total = 0;
+        while (walker.nextNode()) {
+            if (walker.currentNode === node) return total + offset;
+            total += walker.currentNode.textContent.length;
+        }
+        return total;
+    }
+
+    // Highlight toolbar: selection mode
+    var pendingSelection = null;
+
+    document.addEventListener('mouseup', function(e) {
+        if (!viewPage) return;
+        if (hlToolbar.contains(e.target)) return;
+
+        var sel = window.getSelection();
+        if (!sel || sel.rangeCount === 0 || sel.isCollapsed) {
+            if (!hlToolbar.contains(e.target)) hideToolbar();
+            return;
+        }
+
+        var range = sel.getRangeAt(0);
+        if (!viewContent.contains(range.commonAncestorContainer)) {
+            hideToolbar();
+            return;
+        }
+
+        var start = domOffsetToText(range.startContainer, range.startOffset);
+        var end   = domOffsetToText(range.endContainer,   range.endOffset);
+        if (start === end) { hideToolbar(); return; }
+
+        pendingSelection = { start: Math.min(start, end), end: Math.max(start, end) };
+        showSwatchToolbar(e.clientX, e.clientY);
+    });
+
+    function showSwatchToolbar(x, y) {
+        hlRemoveBtn.classList.remove('visible');
+        positionToolbar(x, y);
+        hlToolbar.classList.add('visible');
+    }
+
+    function showRemoveToolbar(x, y, hlid) {
+        pendingSelection = null;
+        hlRemoveBtn.classList.add('visible');
+        hlRemoveBtn.dataset.hlid = hlid;
+        positionToolbar(x, y);
+        hlToolbar.classList.add('visible');
+    }
+
+    function positionToolbar(x, y) {
+        hlToolbar.style.left = '-9999px';
+        hlToolbar.style.top  = '-9999px';
+        hlToolbar.classList.add('visible');
+        var tw = hlToolbar.offsetWidth;
+        var th = hlToolbar.offsetHeight;
+        var left = Math.min(x + 4, window.innerWidth  - tw - 8);
+        var top  = Math.max(y - th - 8, 8);
+        hlToolbar.style.left = left + 'px';
+        hlToolbar.style.top  = top  + 'px';
+    }
+
+    function hideToolbar() {
+        hlToolbar.classList.remove('visible');
+        pendingSelection = null;
+    }
+
+    // Apply a highlight colour to the pending selection
+    document.querySelectorAll('.hl-swatch').forEach(function(swatch) {
+        swatch.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            if (!viewPage || !pendingSelection) return;
+            var color = swatch.dataset.color;
+            var highlights = viewPage.highlights || [];
+            var id = Date.now();
+            highlights.push({ id: id, start: pendingSelection.start, end: pendingSelection.end, color: color });
+            viewPage.highlights = highlights;
+            updatePage(viewPage.id, { highlights: highlights }, function() {
+                window.getSelection().removeAllRanges();
+                hideToolbar();
+                renderView();
+            });
+        });
+    });
+
+    // Remove a highlight by id
+    hlRemoveBtn.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        if (!viewPage) return;
+        var hlid = Number(hlRemoveBtn.dataset.hlid);
+        var highlights = (viewPage.highlights || []).filter(function(h) { return h.id !== hlid; });
+        viewPage.highlights = highlights;
+        updatePage(viewPage.id, { highlights: highlights }, function() {
+            hideToolbar();
+            renderView();
+        });
+    });
+
+    // Clicking outside toolbar hides it
+    document.addEventListener('mousedown', function(e) {
+        if (!hlToolbar.contains(e.target) && !viewContent.contains(e.target)) {
+            hideToolbar();
         }
     });
 
