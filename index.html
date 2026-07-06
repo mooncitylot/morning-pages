@@ -746,7 +746,7 @@
         progressFill.style.width = pct + '%';
         progressFill.classList.toggle('complete', words >= 300);
 
-        var pages = Math.min(Math.floor(words / 250), 3);
+        var pages = Math.min(Math.floor(words / 100), 3);
         pageCountEl.textContent = pages;
     }
 
