@@ -742,9 +742,9 @@
         wordCountEl.textContent = words.toLocaleString();
         charCountEl.textContent = chars.toLocaleString();
 
-        var pct = Math.min((words / 750) * 100, 100);
+        var pct = Math.min((words / 300) * 100, 100);
         progressFill.style.width = pct + '%';
-        progressFill.classList.toggle('complete', words >= 750);
+        progressFill.classList.toggle('complete', words >= 300);
 
         var pages = Math.min(Math.floor(words / 250), 3);
         pageCountEl.textContent = pages;
